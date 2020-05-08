@@ -14,7 +14,6 @@ from selenium.webdriver.support import expected_conditions as EC
 class EtholLogin():
     def startDriver(self):
         self.driver = webdriver.Chrome()
-
         #self.driver.set_window_size(800, 560)
 
         self.driver.get("https://ethol.pens.ac.id/")
