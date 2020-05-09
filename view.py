@@ -11,6 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from course import Course
 from coursetime import CourseTime
 from courselogic import CourseLogic
+from ethollogin import EtholLogin
 
 class Ui_View(object):
     def setupUi(self, View):
@@ -62,10 +63,11 @@ class Ui_View(object):
         self.loginNowCB.setObjectName("loginNowCB")
 
         self.retranslateUi(View)
-        self.buttonBox.accepted.connect(View.accept)
+        self.buttonBox.accepted.connect(self.runLogin())
         self.buttonBox.rejected.connect(View.reject)
         QtCore.QMetaObject.connectSlotsByName(View)
 
+        self.setupSignals()
         self.loadCourse()
 
     def retranslateUi(self, View):
@@ -86,7 +88,7 @@ class Ui_View(object):
         courseLogic = CourseLogic()
 
         courseLogic.loadFile()
-        courseList = courseLogic.getCourseList()
+        self.courseList = courseLogic.getCourseList()
 
         for course in courseList:
             courseNameList.append(course.getDetailName())
@@ -94,3 +96,36 @@ class Ui_View(object):
         print(courseNameList)
 
         self.courseCB.addItems(courseNameList)
+
+    def setupSignals(self):
+        self.courseCB.currentIndexChanged().connect(self.courseSelected())
+        self.loginNowCB.stateChanged().connect(self.loginNowCBStateChanged())
+
+    def loginNowCBStateChanged(self):
+        if( !(self.loginNowCB.isChecked) ):
+            self.loginInfoL.hide()
+
+    def courseSelected(self):
+        self.courseIndex = self.courseCB.currentIndex
+        currentCourse = self.courseList[courseIndex]
+        currentTimeList = currentCourse.timeList
+
+        isLoginNowChecked = int(self.loginNowCB.isChecked())
+
+        if(isLoginNowChecked):
+            string = "You will be automatically logged in at "
+            string += str(currentTimeList[0].getDayName + ", ")
+            string += str(currentTimeList[0].time + ".")
+
+            self.loginInfoL.setText(_translate("View", string))
+            self.loginInfoL.show()
+
+    def runLogin(self):
+        login = EtholLogin()
+
+        login.setCredential(self.usernameLE.text, self.passwordLE.text)
+        login.setChosenCourse(self.courseCB.currentIndex)
+
+        login.startDriver()
+        login.portalLogin()
+        login.loadCourse()
