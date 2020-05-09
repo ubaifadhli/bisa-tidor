@@ -8,9 +8,10 @@ class AppWindow(QDialog):
         self.ui = Ui_View()
         self.ui.setupUi(self)
         self.show()
-
-app = QApplication(sys.argv)
-w = AppWindow()
-w.show()
-app.exec()
-# sys.exit(app.exec_())
+        
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    w = AppWindow()
+    w.show()
+    app.exec()
+    # sys.exit(app.exec_())
