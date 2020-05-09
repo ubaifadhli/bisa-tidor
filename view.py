@@ -61,11 +61,14 @@ class Ui_View(object):
         self.loginNowCB = QtWidgets.QCheckBox(View)
         self.loginNowCB.setGeometry(QtCore.QRect(100, 170, 111, 17))
         self.loginNowCB.setObjectName("loginNowCB")
+        self.loginNowCB.hide()
 
         self.retranslateUi(View)
-        self.buttonBox.accepted.connect(self.runLogin())
+        self.buttonBox.accepted.connect(View.accept)
         self.buttonBox.rejected.connect(View.reject)
         QtCore.QMetaObject.connectSlotsByName(View)
+
+        self.courseList = []
 
         self.setupSignals()
         self.loadCourse()
@@ -90,43 +93,37 @@ class Ui_View(object):
         courseLogic.loadFile()
         self.courseList = courseLogic.getCourseList()
 
-        for course in courseList:
+        for course in self.courseList:
             courseNameList.append(course.getDetailName())
-
-        print(courseNameList)
 
         self.courseCB.addItems(courseNameList)
 
     def setupSignals(self):
-        self.courseCB.currentIndexChanged().connect(self.courseSelected())
-        self.loginNowCB.stateChanged().connect(self.loginNowCBStateChanged())
+        self.courseCB.currentIndexChanged.connect(self.courseSelected)
+        self.loginNowCB.stateChanged.connect(self.loginNowCBStateChanged)
+        self.buttonBox.accepted.connect(self.runLogin)
 
     def loginNowCBStateChanged(self):
-        if( !(self.loginNowCB.isChecked) ):
+        if(self.loginNowCB.isChecked == False):
             self.loginInfoL.hide()
 
     def courseSelected(self):
-        courseIndex = self.courseCB.currentIndex
+        courseIndex = self.courseCB.currentIndex()
         currentCourse = self.courseList[courseIndex]
         currentTimeList = currentCourse.timeList
         dayIndex = currentTimeList[0].day
 
-        isLoginNowChecked = int(self.loginNowCB.isChecked())
-
-        if(isLoginNowChecked):
+        if(self.loginNowCB.isChecked == False):
             string = "You will be automatically logged in at "
-            string += str(currentTimeList[0].getDayName(dayIndex) + ", ")
+            # string += str(currentTimeList[0].getDayName() + ", ")
             string += str(currentTimeList[0].time + ".")
 
-            self.loginInfoL.setText(_translate("View", string))
+            self.loginInfoL.setText(string)
             self.loginInfoL.show()
 
     def runLogin(self):
         login = EtholLogin()
 
-        login.setCredential(self.usernameLE.text, self.passwordLE.text)
-        login.setChosenCourse(self.courseCB.currentIndex)
-
         login.startDriver()
-        login.portalLogin()
-        login.loadCourse()
+        login.portalLogin(self.usernameLE.text(), self.passwordLE.text())
+        login.loadCourse(self.courseCB.currentIndex())
