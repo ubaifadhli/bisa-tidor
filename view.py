@@ -106,15 +106,16 @@ class Ui_View(object):
             self.loginInfoL.hide()
 
     def courseSelected(self):
-        self.courseIndex = self.courseCB.currentIndex
+        courseIndex = self.courseCB.currentIndex
         currentCourse = self.courseList[courseIndex]
         currentTimeList = currentCourse.timeList
+        dayIndex = currentTimeList[0].day
 
         isLoginNowChecked = int(self.loginNowCB.isChecked())
 
         if(isLoginNowChecked):
             string = "You will be automatically logged in at "
-            string += str(currentTimeList[0].getDayName + ", ")
+            string += str(currentTimeList[0].getDayName(dayIndex) + ", ")
             string += str(currentTimeList[0].time + ".")
 
             self.loginInfoL.setText(_translate("View", string))
