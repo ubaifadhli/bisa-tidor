@@ -13,17 +13,20 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class EtholLogin():
     def startDriver(self):
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome("tools/chromedriver.exe")
 
-        #self.driver.set_window_size(800, 560)
+##        self.driver.set_window_size(800, 560)
 
         self.driver.get("https://ethol.pens.ac.id/")
 
-    def getCredential(self):
-        self.username = input("Masukkan username (username@it.student.pens.ac.id) : ")
-        self.password = getpass.getpass(prompt='Masukkan password : ')
+    def setCredential(self, username, password):
+        self.username = username
+        self.password = password
+        
+##        self.username = input("Masukkan username (username@it.student.pens.ac.id) : ")
+##        self.password = getpass.getpass(prompt='Masukkan password : ')
 
-    def portalLogin(self):
+    def portalLogin(self, username, password):
         self.driver.find_element(By.LINK_TEXT, "Login").click()
 
         self.driver.find_element(By.ID, "username").click()
@@ -34,28 +37,28 @@ class EtholLogin():
 
         self.driver.find_element(By.NAME, "submit").click()
 
-    def printCourseList(self):
-        self.courseList = ["Bahasa Inggris Untuk Professional 2",
-              "Kecerdasan Komputasional",
-              "Pemrograman Lanjut",
-              "Pengolahan Citra",
-              "Workshop Administrasi & Manajemen Jaringan",
-              "Workshop Pengembangan Perangkat Lunak",
-              "Interaksi Manusia & Komputer",
-              "Pemrograman Framework",
-              "Praktikum Kecerdasan Komputasional",
-              "Praktikum Pengolahan Citra",
-              "Praktikum Pemrograman Lanjut"]
+##    def printCourseList(self):
+##        self.courseList = ["Bahasa Inggris Untuk Professional 2",
+##              "Kecerdasan Komputasional",
+##              "Pemrograman Lanjut",
+##              "Pengolahan Citra",
+##              "Workshop Administrasi & Manajemen Jaringan",
+##              "Workshop Pengembangan Perangkat Lunak",
+##              "Interaksi Manusia & Komputer",
+##              "Pemrograman Framework",
+##              "Praktikum Kecerdasan Komputasional",
+##              "Praktikum Pengolahan Citra",
+##              "Praktikum Pemrograman Lanjut"]
+##
+##        print("")
+##
+##        for i in range(len(self.courseList)):
+##            print(str(i + 1) + ". " + self.courseList[i])
 
-        print("")
-
-        for i in range(len(self.courseList)):
-            print(str(i + 1) + ". " + self.courseList[i])
-
-    def getChosenCourse(self):
-        print("")
+    def setChosenCourse(self, chosenCourse):
+        self.chosenCourse = int(chosenCourse)
         
-        self.chosenCourse = int(input("Masukkan pilihan mata kuliah : "))
+##        self.chosenCourse = int(input("Masukkan pilihan mata kuliah : "))
         self.carouselChosenCourse = int( ( (self.chosenCourse  - 1) / 3 ) + 1)
 
         
@@ -76,17 +79,9 @@ class EtholLogin():
         self.element = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.confRoomButtonVar)))
         self.driver.find_element(By.CSS_SELECTOR, self.confRoomButtonVar).click()
 
-        #self.driver.find_element(By.CSS_SELECTOR, ".v-btn--block > .v-btn__content").click()
+##        self.driver.find_element(By.CSS_SELECTOR, ".v-btn--block > .v-btn__content").click()
 
         self.wait = WebDriverWait(self.driver, 60)
 
         self.element = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".icon-bbb-listen")))
         self.driver.find_element(By.CSS_SELECTOR, ".icon-bbb-listen").click()
-
-login = EtholLogin()
-login.getCredential()
-login.printCourseList()
-login.getChosenCourse()
-login.startDriver()
-login.portalLogin()
-login.loadCourse()

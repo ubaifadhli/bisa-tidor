@@ -1,0 +1,1 @@
+"C:\Users\Fadhli Ubai\AppData\Local\Programs\Python\Python38-32\Scripts\pyuic5.exe" D:\Documents\bisa-tidor\View.ui > view.py
